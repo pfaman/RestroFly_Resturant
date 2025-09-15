@@ -18,7 +18,7 @@ export const AuthMiddleware = async (req, res, next) => {
       return res
         .status(401)
         .json({
-          message: "User not found, authorization denied",
+          message: "User not found",
           success: false,
         });
     }

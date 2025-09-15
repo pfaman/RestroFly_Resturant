@@ -95,10 +95,9 @@ export const loginController = async (req, res) => {
   }
 };
 
-// Get User Data
-export const userController = async (req, res) => {
+// Get User
+export const getUserController = async (req, res) => {
   try {
-
     let user = await User.findById(req.user.id);
 
     if (!user) {
@@ -108,10 +107,27 @@ export const userController = async (req, res) => {
     }
     res
       .status(200)
-      .json({ message: "User data get successfully",  user }, { success: true });
+      .json({ message: "User data get successfully", user }, { success: true });
   } catch (error) {
+    res.status(500).json({ message: error.message }, { success: false });
+  }
+};
+
+// Delete User
+
+export const deleteUserController = async (req, res) => {
+  try {
+    let user = await User.findByIdAndDelete(req.user.id);
+
+    if(!user){
+       return res
+         .status(401)
+         .json({ message: "User not found" }, { success: true });
+    }
     res
-      .status(500)
-      .json({ message: error.message }, { success: false });
+      .status(200)
+      .json({ message: "User deleted successfully", user }, { success: true });
+  } catch (error) {
+    res.status(500).json({ message: error.message }, { success: false });
   }
 };
