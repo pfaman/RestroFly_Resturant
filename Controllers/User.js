@@ -18,11 +18,13 @@ export const registerController = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ message: "User already existed", success: false });
+      return res
+        .status(400)
+        .json({ message: "User already existed", success: false });
     }
 
     let hashedPassword = await bcrypt.hash(password, 10);
-    
+
     user = await User.create({
       username,
       email,
@@ -72,9 +74,10 @@ export const loginController = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn : '1d',
+      expiresIn: "1d",
     });
 
+    user.password = undefined;
     res.status(200).json({
       message: "User login successfully",
       success: true,
@@ -89,5 +92,26 @@ export const loginController = async (req, res) => {
     });
   } catch (error) {
     res.status(501).json({ message: error.message }, { success: false });
+  }
+};
+
+// Get User Data
+export const userController = async (req, res) => {
+  try {
+
+    let user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "User not found" }, { success: true });
+    }
+    res
+      .status(200)
+      .json({ message: "User data get successfully",  user }, { success: true });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: error.message }, { success: false });
   }
 };
