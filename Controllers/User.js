@@ -1,6 +1,6 @@
 import { User } from "../Models/User.js";
 import bcrypt from "bcryptjs";
-
+import jwt from "jsonwebtoken";
 // Register User
 export const registerController = async (req, res) => {
   console.log(req.body);
@@ -22,6 +22,7 @@ export const registerController = async (req, res) => {
     }
 
     let hashedPassword = await bcrypt.hash(password, 10);
+    
     user = await User.create({
       username,
       email,
@@ -69,9 +70,23 @@ export const loginController = async (req, res) => {
         .status(401)
         .json({ message: "Invaild credentials" }, { success: true });
     }
-    res
-      .status(200)
-      .json({ message: "User login successfully" }, { success: true });
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn : '1d',
+    });
+
+    res.status(200).json({
+      message: "User login successfully",
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+      },
+    });
   } catch (error) {
     res.status(501).json({ message: error.message }, { success: false });
   }
