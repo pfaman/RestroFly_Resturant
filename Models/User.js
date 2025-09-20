@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
     default:
       "https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcT-_VWWLluyeq_32DaRkuSHHTlF52Z6Jz2NXSttjGZ7RDuj2dLzfzgPCrvhbBB6cT1DtjiTaxV2WfA0pdlMpXOczfia9sQTanC6F_znQ8voAVRM1KriWqmSm0XDavaYQTGZKzpp5vD3mrs",
   },
+  answer : {
+    type : String,
+    required : [true, 'Answer is required'],
+  }
 }, {timeStamps : true});
 
 

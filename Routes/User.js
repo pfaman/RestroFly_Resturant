@@ -4,6 +4,9 @@ import {
   registerController,
   getUserController,
   deleteUserController,
+  updateUserController,
+  updateUserPasswordController,
+  resetPasswordController,
 } from "../Controllers/User.js";
 import { AuthMiddleware } from '../MIddlewares/Auth.js';
 const router = express.Router();
@@ -27,7 +30,23 @@ router.get("/getUser", AuthMiddleware, getUserController);
 // Delete User Routes
 // Request Type : DELETE
 // @api /api/user/delete/:id
-router.get("/delete/:id", AuthMiddleware, deleteUserController);
+router.delete("/delete/:id", AuthMiddleware, deleteUserController);
+
+// Update User Routes
+// Request Type : PUT
+// @api /api/user/updateuser
+router.put("/updateuser", AuthMiddleware, updateUserController);
+
+// Update User PasswordRoutes
+// Request Type : PUT
+// @api /api/user/updatepassword
+router.put("/updatepassword", AuthMiddleware, updateUserPasswordController);
+
+
+// Reset User Password Routes
+// Request Type : PUT
+// @api /api/user/resetpassword
+router.put("/resetpassword", AuthMiddleware, resetPasswordController);
 
 
 export default router;

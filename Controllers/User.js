@@ -5,11 +5,11 @@ import jwt from "jsonwebtoken";
 export const registerController = async (req, res) => {
   console.log(req.body);
   try {
-    const { username, email, phone, password, address } = req.body;
+    const { username, email, phone, password, address, answer } = req.body;
 
     // Validation
 
-    if (!username || !email || !password || !phone || !address) {
+    if (!username || !email || !password || !phone || !address || !answer)  {
       return res
         .status(400)
         .json({ message: "All fields are required", success: false });
@@ -31,6 +31,7 @@ export const registerController = async (req, res) => {
       password: hashedPassword,
       phone,
       address,
+      answer,
     });
     res
       .status(200)
@@ -131,3 +132,111 @@ export const deleteUserController = async (req, res) => {
     res.status(500).json({ message: error.message }, { success: false });
   }
 };
+
+// Update User
+export const updateUserController = async (req, res) => {
+  try {
+    const { username, address, phone } = req.body;
+
+    let user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    }
+
+    // Update fields
+    if (username) user.username = username;
+    if (address) user.address = address;
+    if (phone) user.phone = phone;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "User updated successfully",
+      success: true,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false });
+  }
+};
+
+
+// Update User Password
+export const updateUserPasswordController = async (req, res) => {
+  try {
+
+    const { password } = req.body;
+
+    let user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    }
+
+    if (!password) {
+      return res
+        .status(400)
+        .json({ message: "Password is required", success: false });
+    }
+
+    // Update fields
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    
+    await user.save();
+
+    res.status(200).json({
+      message: "User password updated successfully",
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message, success: false });
+  }
+};
+
+
+// Reset Password
+
+export const resetPasswordController = async (req, res) => {
+
+  try {
+
+    const { email , newPassword, answer} = req.body;
+    
+    if (!email || !newPassword || !answer) {
+      return res
+        .status(404)
+        .json({ message: "All fields are required", success: false });
+    }
+     const user = await User.findOne( { email, answer });
+
+     if(!user){
+      return res
+        .status(404)
+        .json({ message: "User not found or Invalid answer", success: false });
+     }
+
+     const hashedPassword = await bcrypt.hash(newPassword, 10);
+     user.password = hashedPassword;
+     
+     await user.save();
+     return res
+       .status(200)
+       .json({ message: "Password reset succesfully", success: true });
+  }
+  catch(error){
+    res.status(500).json({message : error.message}, { success : false})
+  }
+}
+
