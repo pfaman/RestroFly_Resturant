@@ -106,4 +106,33 @@ catch(error){
 }
 
 
+// Delete  Restaurant
+export const deleteRestaurantController = async (req, res) => {
+
+  try{
+
+  const restaurantId = req.params.id;
+
+  if (!restaurantId) {
+    return res
+      .status(404)
+      .json({ message: " Please provide restaurant Id " }, { success: false });
+  }
+
+  let restaurant = await Restaurant.findByIdAndDelete(restaurantId);
+
+
+  if (!restaurant) {
+    return res.status(404).json({ message: " No  restaurant available " }, { success: false });
+  }
+  res
+    .status(200)
+    .json({ message: "Restaurant delete successfully " , restaurant }, { success: true });
+
+}
+catch(error){
+ res.status(500).json({ message : error.message}, {success : false })
+}
+}
+
 // 

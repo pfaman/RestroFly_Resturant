@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { AuthMiddleware } from '../MIddlewares/Auth.js';
-import { createRestaurant, getAllRestaurantController, getOneRestaurantController } from '../Controllers/Restaurant.js';
+import { createRestaurant, deleteRestaurantController, getAllRestaurantController, getOneRestaurantController } from '../Controllers/Restaurant.js';
 const router = express.Router();
 
 
@@ -22,6 +22,12 @@ router.get("/getAll", AuthMiddleware, getAllRestaurantController);
 // Request Type : GET
 // @api /api/restaurant/getOne
 router.get("/getOne/:id", AuthMiddleware, getOneRestaurantController);
+
+
+//Delete One Resaurant 
+// Request Type : GET
+// @api /api/restaurant/delete
+router.get("/delete/:id", AuthMiddleware, deleteRestaurantController);
 
 
 export default router;
