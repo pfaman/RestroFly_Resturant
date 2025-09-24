@@ -33,7 +33,7 @@ export const registerController = async (req, res) => {
       address,
       answer,
     });
-    res
+    res  
       .status(200)
       .json(
         { message: "User created successfully!!!!" },

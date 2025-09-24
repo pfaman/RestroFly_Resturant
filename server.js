@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
 import userRoute from './Routes/User.js'
-
+import restaurantRoute from './Routes/Restaurant.js'
 const app = express();
 
 // MiddleWares
@@ -22,6 +22,9 @@ app.get("/", (req, res) => {
 
 // User Route
 app.use("/api/user",userRoute)
+
+// Restaurant Route
+app.use("/api/restaurant",restaurantRoute)
 
 // DB Setup
 mongoose.connect(
