@@ -3,8 +3,10 @@ import { config } from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
-import userRoute from './Routes/User.js'
-import restaurantRoute from './Routes/Restaurant.js'
+import userRoute from './Routes/User.js';
+import restaurantRoute from './Routes/Restaurant.js';
+
+import categoryRoute from './Routes/Category.js';
 const app = express();
 
 // MiddleWares
@@ -25,6 +27,10 @@ app.use("/api/user",userRoute)
 
 // Restaurant Route
 app.use("/api/restaurant",restaurantRoute)
+
+// Category Route
+
+app.use("/api/category", categoryRoute)
 
 // DB Setup
 mongoose.connect(

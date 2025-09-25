@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongooses from "mongoose";
 
 const restaurantSchema = new mongoose.Schema(
   {
