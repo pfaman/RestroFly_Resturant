@@ -5,7 +5,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import userRoute from './Routes/User.js';
 import restaurantRoute from './Routes/Restaurant.js';
-
+import foodRoute from './Routes/Food.js'
 import categoryRoute from './Routes/Category.js';
 const app = express();
 
@@ -31,6 +31,9 @@ app.use("/api/restaurant",restaurantRoute)
 // Category Route
 
 app.use("/api/category", categoryRoute)
+
+// Food Category
+app.use("/api/food", foodRoute);
 
 // DB Setup
 mongoose.connect(
