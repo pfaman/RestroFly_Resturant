@@ -45,7 +45,7 @@ const foodSchema = mongoose.Schema(
       type: String,
     },
   },
-  { timeStamps: true }
+  { timestamps: true }
 );
 
 

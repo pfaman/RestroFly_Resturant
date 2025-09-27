@@ -14,7 +14,7 @@ const OrdersSchema = mongoose.Schema(
       default: "preparing",
     },
   },
-  { timeStamps: true }
+  { timestamps: true }
 );
 
 export const Orders = mongoose.model("Orders", OrdersSchema);

@@ -118,15 +118,13 @@ export const getFoodListByRestaurantController = async (req, res) => {
         .status(404)
         .json({ message: " No food available by Rest Id" }, { success: false });
     }
-    res
-      .status(200)
-      .json(
-        {
-          message: "food list get successfully by restaurant ",
-          foodlistByRestaurant,
-        },
-        { success: true }
-      );
+    res.status(200).json(
+      {
+        message: "food list get successfully by restaurant ",
+        foodlistByRestaurant,
+      },
+      { success: true }
+    );
   } catch (error) {
     res.status(500).json({ message: error.message }, { success: false });
   }
@@ -231,36 +229,90 @@ export const updateFoodController = async (req, res) => {
 export const placeOrderController = async (req, res) => {
   try {
     const { cart } = req.body;
-    if (!cart)
-      return res
-        .status(500)
-        .json(
-          { message: "Please add food cart or payment method " },
-          { success: false }
-        );
+
+    if (!cart || cart.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please add food cart or payment method",
+      });
+    }
+
     // Calculate Price
     let total = 0;
-
-    cart.map((i) => {
-      total += i.price;
+    cart.forEach((item) => {
+      total += item.price;
     });
 
-    const newOrder = await new Orders({
-      foods: cart,
-      payment: total,
-      buyer: req.body.id,
+    // Buyer
+    const buyerId = req.user?._id || req.body.id;
+    if (!buyerId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found / not logged in",
+      });
+    }
+
+    // Save order
+    const newOrder = new Orders({
+      foods: cart.map((item) => item._id), // only save food IDs
+      payment: { amount: total }, // structured payment
+      buyer: buyerId,
     });
 
     await newOrder.save();
-    res
-      .status(200)
-      .json({ message: "Order placed sucessfully" , newOrder }, { success: true });
-  } catch(error) {
-    res
-      .status(500)
-      .json(
-        { message: error.message },
-        { success: false }
-      );
+
+    res.status(200).json({
+      success: true,
+      message: "Order placed successfully",
+      newOrder,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
+
+
+///
+
+export const OrderStatusController = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    if (!orderId) {
+      return res.status(404).json({
+        success: false,
+        message: "Order id not provided",
+      });
+    }
+
+    const { status } = req.body;
+
+    const order = await Orders.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Order status updated successfully",
+      order,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+

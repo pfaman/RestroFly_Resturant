@@ -1,17 +1,18 @@
-import express from 'express';
-import { AuthMiddleware } from '../MIddlewares/Auth.js';
+import express from "express";
+import { AuthMiddleware } from "../MIddlewares/Auth.js";
 import {
   createFoodController,
   deleteFoodController,
   getAllFoodController,
   getFoodListByRestaurantController,
   getOneFoodController,
+  OrderStatusController,
   placeOrderController,
   updateFoodController,
 } from "../Controllers/Food.js";
+import { AdminMiddleware } from "../MIddlewares/Admin.js";
 
 const router = express.Router();
-
 
 //Routes
 
@@ -19,14 +20,13 @@ const router = express.Router();
 // Request Type : POST
 // @api/food/create
 
-router.post('/create', AuthMiddleware, createFoodController);
+router.post("/create", AuthMiddleware, createFoodController);
 
 // Get food
 // Request Type : GET
 // @api/food/getAll
 
-router.get('/getAll', AuthMiddleware, getAllFoodController);
-
+router.get("/getAll", AuthMiddleware, getAllFoodController);
 
 // Get All food list by Rest Id
 // Request Type : GET
@@ -38,7 +38,7 @@ router.get(
   getFoodListByRestaurantController
 );
 
-//Read One Food 
+//Read One Food
 // Request Type : GET
 // @api /api/food/getOne
 router.get("/getOne/:id", AuthMiddleware, getOneFoodController);
@@ -47,8 +47,7 @@ router.get("/getOne/:id", AuthMiddleware, getOneFoodController);
 // Request Type : Delete
 // @api/food/delete/:id
 
-router.delete('/delete/:id', AuthMiddleware, deleteFoodController);
-
+router.delete("/delete/:id", AuthMiddleware, deleteFoodController);
 
 // Update food
 // Request Type : PUT
@@ -56,8 +55,15 @@ router.delete('/delete/:id', AuthMiddleware, deleteFoodController);
 
 router.put("/update/:id", AuthMiddleware, updateFoodController);
 
-
 /// Place Order
 router.post("/placeOrder", AuthMiddleware, placeOrderController);
+
+// Order Status
+router.post(
+  "/orderStatus/:id",
+  AuthMiddleware,
+  AdminMiddleware,
+  OrderStatusController
+);
 
 export default router;
