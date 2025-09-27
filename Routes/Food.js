@@ -6,6 +6,7 @@ import {
   getAllFoodController,
   getFoodListByRestaurantController,
   getOneFoodController,
+  placeOrderController,
   updateFoodController,
 } from "../Controllers/Food.js";
 
@@ -54,5 +55,9 @@ router.delete('/delete/:id', AuthMiddleware, deleteFoodController);
 // @api/food/update/:id
 
 router.put("/update/:id", AuthMiddleware, updateFoodController);
+
+
+/// Place Order
+router.post("/placeOrder", AuthMiddleware, placeOrderController);
 
 export default router;
